@@ -42,7 +42,7 @@ app.use(errorMiddleware);
 // Socket Connection && CODE
 const io = new Server(socketServer, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: "https://inventory-9bz1ec4wp-hamzatariqs-projects.vercel.app/",
         methods: ["*"],
     },
 });
