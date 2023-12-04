@@ -1,5 +1,5 @@
 # compiled output
 
 /node_modules
-/config.env
+config/config.env
 .vercel
