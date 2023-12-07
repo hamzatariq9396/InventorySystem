@@ -17,10 +17,12 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 app.use(cors({
-    origin:process.env.FRONTEND_URL,
+    origin:"*",
     optionsSuccessStatus: 200,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials:false
 }));
-
+app.options('*', cors());
 
 // app.use(cors());
 // ROUTE IMPORTS
