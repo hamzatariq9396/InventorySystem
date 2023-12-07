@@ -5,7 +5,8 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const { Server } = require("socket.io")
 const { createServer } = require("http");
-
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config/config.env" });
 
 const app = express();
 const socketServer = createServer(app);
@@ -48,7 +49,7 @@ app.use(errorMiddleware);
 // Socket Connection && CODE
 const io = new Server(socketServer, {
     cors: {
-        origin: "https://inventory-9bz1ec4wp-hamzatariqs-projects.vercel.app/",
+        origin: process.env.FRONTEND_URL,
         methods: ["*"],
     },
 });
@@ -64,38 +65,43 @@ io.on("connection", (socket) => {
     console.log(`User Connected: ${socket.id}`)
 
     socket.on("addProduct", product => {
-     
+
         products.push(product);
         io.emit("getProducts", products)
     })
     socket.on("updateProduct", product => {
-     
+
         products.push(product)
         io.emit("getProducts", products)
     })
     socket.on("deleteNotification", product => {
-     console.log(product.id);
+        console.log(product.id, product.actionType);
 
-     console.log(products);
+        console.log("Original Array", products);
 
-     products.filter((item)=>item.id===product.id)
+        // Create a new array with items that do not match the filter condition
+        const filteredProducts = products.filter((item) => item.id !== product.id || item.actionType !== product.actionType);
 
-     console.log("FilterArray",products);
+        console.log("FilterArray", filteredProducts);
 
+        // Update the original array with the filtered array
+        products = filteredProducts;
 
-        io.emit("getProducts", products)
-    })
+        io.emit("getProducts", products);
+    });
 
 
 })
 
 
+const socketPort = process.env.SOCKET_PORT
 
-socketServer.listen(8080, (err) => {
+
+socketServer.listen(socketPort, (err) => {
     if (err) {
         console.log(err);
     } else {
-        console.log("Socket Server is running on port: 8080...");
+        console.log(`Socket Server is running on port:${socketPort}`);
     }
 })
 

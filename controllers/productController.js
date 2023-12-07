@@ -74,6 +74,9 @@ exports.updateProduct = catchAsyncErrors(async (req, res) => {
   if (!product) {
     return next(new ErrorHandler("Product Not Found", 404));
   }
+  if(req.body.price===0  || req.body.price <0){
+    return res.status(400).json({message:"PLease Enter Valid Amount"})
+  }
 
   product = await Product.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -85,7 +88,7 @@ exports.updateProduct = catchAsyncErrors(async (req, res) => {
     success: true,
     product,
     status:200,
-    message:"Products Found Successfully"
+    message:"Products Update  Successfully"
   });
 });
 
